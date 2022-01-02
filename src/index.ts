@@ -1,7 +1,6 @@
 /** @format */
 
 import * as express from 'express';
-import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import { PORT, KEY, NODE_ENV } from './vars';
 import helmet from 'helmet';
@@ -13,6 +12,8 @@ async function startServer() {
 		useUnifiedTopology: true,
 		useNewUrlParser: true,
     });
+
+    app.use(helmet());
 
 	app.get('/:id', (req, res) => {
 		res.status(200).send(
