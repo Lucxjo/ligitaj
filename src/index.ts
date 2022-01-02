@@ -8,18 +8,19 @@ import helmet from 'helmet';
 async function startServer() {
 	const app = express.default();
 
-	await mongoose.connect('mongodb://localhost:27017/opd', {
-		useUnifiedTopology: true,
-		useNewUrlParser: true,
-    });
+	await mongoose.connect('mongodb://localhost:27017/links');
 
     app.use(helmet());
 
+    app.get('/', (req, res) => {
+        res.status(302).redirect('https://ludoviko.ch');
+    });
+
 	app.get('/:id', (req, res) => {
 		res.status(200).send(
-			`<h1>Welcome to Ligitaj!</h1>`
+			`<h1>Welcome to Ligitaj! ${req.params.id}</h1>`
 		);
-	});
+    });
 
 	console.log('Connected to MongoDB');
 
