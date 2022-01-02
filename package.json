@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "webpack",
 		"build:dev": "NODE_ENV=development webpack",
-		"start:dev": "NODE_ENV=development nodemon build/index.js",
+		"start:dev": "NODE_ENV=development BASE_URL=https://ludoviko.ch HOME_URL=https://ludoviko.ch nodemon build/index.js",
 		"start": "node build/index.js"
 	},
 	"devDependencies": {

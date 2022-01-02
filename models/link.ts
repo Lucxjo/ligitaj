@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 import shortId from '../lib/shortId';
 
 const linkSchema = new mongoose.Schema({
-    fullUrl: {
+    full: {
         type: String,
         required: true,
     },
-    shortUrl: {
+    short: {
         type: String,
         required: true,
         default: shortId(),

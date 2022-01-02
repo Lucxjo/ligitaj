@@ -2,7 +2,7 @@
 
 const shortId = (length = 8) => {
 	const chars =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 	let str = '';
 	for (let i = 0; i < length; i++) {
 		str += chars.charAt(Math.floor(Math.random() * chars.length));

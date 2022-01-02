@@ -2,25 +2,72 @@
 
 import * as express from 'express';
 import mongoose from 'mongoose';
-import { PORT, KEY, NODE_ENV } from './vars';
+import { PORT, KEY, NODE_ENV, BASE_URL, HOME_URL } from './vars';
 import helmet from 'helmet';
+import * as link from '../models/link';
 
 async function startServer() {
 	const app = express.default();
 
 	await mongoose.connect('mongodb://localhost:27017/links');
 
-    app.use(helmet());
+	app.use(helmet());
+	app.use(express.urlencoded({ extended: false }));
 
-    app.get('/', (req, res) => {
-        res.status(302).redirect('https://ludoviko.ch');
-    });
+	app.get('/', (req, res) => {
+		res.status(302).redirect(`${HOME_URL}`);
+	});
 
-	app.get('/:id', (req, res) => {
-		res.status(200).send(
-			`<h1>Welcome to Ligitaj! ${req.params.id}</h1>`
-		);
-    });
+    app.get('/:short', async (req, res) => {
+        const url = await link.default.findOne({ short: req.params.short });
+        res.status(302).redirect(url.full);
+	});
+
+	app.post('/create-short', async (req, res) => {
+		if (req.headers['x-api-key'] !== KEY) {
+			res.status(401).send('Invalid API key');
+			return;
+		} else {
+			if (req.body.short) {
+				const url = await link.default.create({
+					full: req.body.full,
+					short: req.body.short,
+				});
+				res.status(200).send('Created: ' + url);
+			} else {
+				const url = await link.default.create({
+					full: req.body.full,
+				});
+				res.status(200).send('Created: ' + url);
+			}
+		}
+	});
+
+	app.post('/:short', async (req, res) => {
+		if (req.headers['x-api-key'] !== KEY) {
+			res.status(401).send('Invalid API key');
+			return;
+		} else {
+			const url = await link.default.findOne({
+				short: req.params.short,
+			});
+			res.status(200).send({
+				full: url.full,
+				short: `${BASE_URL}/${url.short}`,
+				clicks: url.clicks,
+			});
+		}
+	});
+
+	app.post('/', async (req, res) => {
+		if (req.headers['x-api-key'] !== KEY) {
+			res.status(401).send('Invalid API key');
+			return;
+		} else {
+			const short = await link.default.find();
+			res.status(200).send(`${short}`);
+		}
+	});
 
 	console.log('Connected to MongoDB');
 
