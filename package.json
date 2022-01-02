@@ -1,6 +1,6 @@
 {
 	"name": "ligitaj",
-	"packageManager": "yarn@3.0.2",
+	"packageManager": "yarn@3.1.1",
 	"scripts": {
 		"build": "webpack",
 		"build:dev": "NODE_ENV=development webpack",
