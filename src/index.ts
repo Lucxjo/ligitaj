@@ -18,17 +18,17 @@ async function startServer() {
 		res.status(302).redirect(`${HOME_URL}`);
 	});
 
-    app.get('/:short', async (req, res) => {
-        const url = await link.default.findOne({ short: req.params.short });
-        if (!url) {
-            res.status(404).redirect(`${HOME_URL}`);
-            return;
-        }
-        if (NODE_ENV === 'production') {
-            url.clicks++;
-            url.save();
-        }
-        res.status(302).redirect(url.full);
+	app.get('/:short', async (req, res) => {
+		const url = await link.default.findOne({ short: req.params.short });
+		if (!url) {
+			res.status(404).redirect(`${HOME_URL}`);
+			return;
+		}
+		if (NODE_ENV === 'production') {
+			url.clicks++;
+			url.save();
+		}
+		res.status(302).redirect(url.full);
 	});
 
 	app.post('/create-short', async (req, res) => {
@@ -65,17 +65,31 @@ async function startServer() {
 				clicks: url.clicks,
 			});
 		}
-    });
-    
-    app.post('/remove/:short', async (req, res) => {
+	});
+
+	app.post('/remove/:short', async (req, res) => {
 		if (req.headers['x-api-key'] !== KEY) {
 			res.status(401).send('Invalid API key');
 			return;
 		} else {
-            await link.default.deleteOne({
-                short: req.params.short,
-            })
+			await link.default.deleteOne({
+				short: req.params.short,
+			});
 			res.status(200).send(`Deleted: ${req.params.short}`);
+		}
+	});
+
+	app.post('/auth', (req, res) => {
+		const { email } = req.body;
+
+		if (!email) {
+			res.status(403).send({
+				message: 'There is no email address that matches this.',
+			});
+		}
+
+		if (email) {
+			res.status(200).send(email);
 		}
 	});
 
