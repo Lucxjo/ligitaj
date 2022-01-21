@@ -19,12 +19,12 @@ var (
 func initFlags() {
 	flag.StringVar(&port, "port", "8000", "port to listen on")
 	flag.StringVar(&key, "key", "0", "Authentication key for mutation of DB")
-	flag.StringVar(&env, "env", "prod", "Environment to run in")
+	flag.StringVar(&env, "env", "router", "Environment to run in")
 	flag.StringVar(&baseUrl, "baseUrl", "", "URL where the server is hosted")
 	flag.StringVar(&homeUrl, "homeUrl", "", "Where to go if short doesn't exist")
 	flag.Parse()
 
-	if env == "prod" && key == "0" {
+	if env != "dev" && key == "0" {
 		panic("You must specify a key for production")
 	}
 
@@ -32,7 +32,7 @@ func initFlags() {
 		panic("You must specify a baseUrl")
 	}
 
-	if homeUrl == "" {
+	if homeUrl == "" && env == "site" {
 		panic("You must specify a homeUrl")
 	}
 
@@ -53,7 +53,7 @@ func main() {
 	})
 
 	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		if env == "prod" {
+		if env == "site" {
 			http.Redirect(rw, r, homeUrl, http.StatusFound)
 		} else {
 			http.ServeFile(rw, r, "./web/index.html")
