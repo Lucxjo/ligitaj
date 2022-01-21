@@ -3,17 +3,20 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"./routes"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 var (
-	port string
-	key string
-	env string
-	baseUrl string
-	homeUrl string
+	port      string
+	key       string
+	env       string
+	baseUrl   string
+	homeUrl   string
+	api_quota int
 )
 
 func initFlags() {
@@ -22,6 +25,7 @@ func initFlags() {
 	flag.StringVar(&env, "env", "router", "Environment to run in")
 	flag.StringVar(&baseUrl, "baseUrl", "", "URL where the server is hosted")
 	flag.StringVar(&homeUrl, "homeUrl", "", "Where to go if short doesn't exist")
+	flag.IntVar(&api_quota, "quota", 10, "Number of API calls allowed per minute")
 	flag.Parse()
 
 	if env != "dev" && key == "0" {
@@ -39,28 +43,21 @@ func initFlags() {
 	fmt.Println("Flags initialised")
 }
 
+func setupRoutes(app *fiber.App) {
+	app.Static("/", "../web")
+	app.Get("/:short", routes.ResolveURL)
+	app.Post("/shorten", routes.ShortenURL)
+}
 
 func main() {
 	fmt.Println("Preparing server startup...")
 	initFlags()
 
-	r := mux.NewRouter()
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Use(logger.New())
 
-	r.HandleFunc("/{short}", func (w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		short := vars["short"]
-		fmt.Fprintf(w, "Short: %s", short)
-	})
-
-	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		if env == "site" {
-			http.Redirect(rw, r, homeUrl, http.StatusFound)
-		} else {
-			http.ServeFile(rw, r, "./web/index.html")
-		}
-	})
-
+	setupRoutes(app)
 	fmt.Println("Starting server on http://localhost:" + port)
-	http.Handle("/", r)
-    http.ListenAndServe(":"+port, r)
+	app.Listen(":" + port)
 }
