@@ -14,8 +14,8 @@ var (
 	port      string
 	key       string
 	env       string
-	baseUrl   string
-	homeUrl   string
+	BaseUrl   string
+	HomeUrl   string
 	api_quota int
 )
 
@@ -23,8 +23,8 @@ func initFlags() {
 	flag.StringVar(&port, "port", "8000", "port to listen on")
 	flag.StringVar(&key, "key", "0", "Authentication key for mutation of DB")
 	flag.StringVar(&env, "env", "router", "Environment to run in")
-	flag.StringVar(&baseUrl, "baseUrl", "", "URL where the server is hosted")
-	flag.StringVar(&homeUrl, "homeUrl", "", "Where to go if short doesn't exist")
+	flag.StringVar(&BaseUrl, "baseUrl", "", "URL where the server is hosted")
+	flag.StringVar(&HomeUrl, "homeUrl", "", "Where to go if short doesn't exist")
 	flag.IntVar(&api_quota, "quota", 10, "Number of API calls allowed per minute")
 	flag.Parse()
 
@@ -32,11 +32,11 @@ func initFlags() {
 		panic("You must specify a key for production")
 	}
 
-	if baseUrl == "" {
+	if BaseUrl == "" {
 		panic("You must specify a baseUrl")
 	}
 
-	if homeUrl == "" && env == "site" {
+	if HomeUrl == "" && env == "site" {
 		panic("You must specify a homeUrl")
 	}
 

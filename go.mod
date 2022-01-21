@@ -1,4 +1,4 @@
-module ludoviko.ch/ligitaj
+module github.com/Lucxjo/ligitaj
 
 go 1.17
 
