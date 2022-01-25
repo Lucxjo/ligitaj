@@ -6,10 +6,10 @@ import (
 
 	"github.com/lucxjo/ligitaj/main/r"
 
-	"github.com/lucxjo/ligitaj/main/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/lucxjo/ligitaj/main/routes"
 )
 
 func initFlags() {
@@ -32,7 +32,7 @@ func initFlags() {
 		panic("You must specify a baseUrl")
 	}
 
-	if r.HomeUrl == "" && r.Env == "site" {
+	if r.HomeUrl == "" && r.Env == "server" {
 		panic("You must specify a homeUrl")
 	}
 
@@ -40,7 +40,7 @@ func initFlags() {
 }
 
 func setupRoutes(app *fiber.App) {
-	app.Static("/", "../web")
+	app.Static("/", "./web")
 	app.Get("/:short", routes.ResolveURL)
 	app.Post("/shorten", routes.ShortenURL)
 }
@@ -49,7 +49,9 @@ func main() {
 	fmt.Println("Preparing server startup...")
 	initFlags()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		CaseSensitive: true,
+	})
 	app.Use(cors.New())
 	app.Use(logger.New())
 

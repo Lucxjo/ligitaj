@@ -8,7 +8,7 @@ import (
 )
 
 func ResolveURL(ctx *fiber.Ctx) (error) {
-	url := ctx.Params("url")
+	url := ctx.Params("short")
 	rdb := db.CreateClient(0)
 	defer rdb.Close()
 
