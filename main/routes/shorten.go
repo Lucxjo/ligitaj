@@ -3,7 +3,7 @@ package routes
 import (
 	"time"
 
-	"../helpers"
+	"github.com/lucxjo/ligitaj/main/helpers"
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 )

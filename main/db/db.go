@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"../r"
+	"github.com/lucxjo/ligitaj/main/r"
 	"github.com/go-redis/redis/v8"
 )
 

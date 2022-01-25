@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"./r"
-	
-	"./routes"
+	"github.com/lucxjo/ligitaj/main/r"
+
+	"github.com/lucxjo/ligitaj/main/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
