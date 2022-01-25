@@ -3,8 +3,9 @@ package routes
 import (
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"../helpers"
+	"github.com/asaskevich/govalidator"
+	"github.com/gofiber/fiber/v2"
 )
 
 type request struct {
@@ -17,8 +18,6 @@ type response struct {
 	URL string `json:"url"`
 	Short string `json:"short"`
 	Expiry time.Duration `json:"expiry"`
-	XRateLimitRemaining int `json:"rate_limit_remaining"`
-	XRateLimitReset time.Duration `json:"rate_limit_reset"`
 }
 
 func ShortenURL(ctx *fiber.Ctx) error {
@@ -33,4 +32,6 @@ func ShortenURL(ctx *fiber.Ctx) error {
 	}
 
 	body.URL = helpers.EnforceHTTPS(body.URL)
+
+	return nil
 }
